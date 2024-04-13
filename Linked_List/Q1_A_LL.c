@@ -5,33 +5,33 @@ Lab Test: Section A - Linked List Questions
 Purpose: Implementing the required functions for Question 1 */
 
 //////////////////////////////////////////////////////////////////////////////////
-
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef struct _listnode{
+typedef struct _listnode {
 	int item;
-	struct _listnode *next;
+	struct _listnode* next;
 } ListNode;			// You should not change the definition of ListNode
 
-typedef struct _linkedlist{
+typedef struct _linkedlist {
 	int size;
-	ListNode *head;
+	ListNode* head;
 } LinkedList;			// You should not change the definition of LinkedList
 
 
 ///////////////////////// function prototypes ////////////////////////////////////
 
 //You should not change the prototype of this function
-int insertSortedLL(LinkedList *ll, int item);
+int insertSortedLL(LinkedList* ll, int item);
 
-void printList(LinkedList *ll);
-void removeAllItems(LinkedList *ll);
-ListNode *findNode(LinkedList *ll, int index);
-int insertNode(LinkedList *ll, int index, int value);
-int removeNode(LinkedList *ll, int index);
+void printList(LinkedList* ll);
+void removeAllItems(LinkedList* ll);
+ListNode* findNode(LinkedList* ll, int index);
+int insertNode(LinkedList* ll, int index, int value);
+int removeNode(LinkedList* ll, int index);
 
 
 //////////////////////////// main() //////////////////////////////////////////////
@@ -71,7 +71,7 @@ int main()
 		case 3:
 			printf("The resulting sorted linked list is: ");
 			printList(&ll);
-			removeAllItems(&ll);
+			//removeAllItems(&ll);
 			break;
 		case 0:
 			removeAllItems(&ll);
@@ -88,16 +88,61 @@ int main()
 
 //////////////////////////////////////////////////////////////////////////////////
 
-int insertSortedLL(LinkedList *ll, int item)
+int insertSortedLL(LinkedList* ll, int item)
 {
 	/* add your code here */
+	ListNode *pre, * cur, *temp;
+	int index = ll->size;
+	int count = 0;
+
+	if (ll == NULL || index < 0 || index > ll->size + 1)
+		return -1;
+
+	// If empty list or inserting first node, need to update head pointer
+	if (ll->head == NULL || index == 0) {
+		cur = ll->head;
+		ll->head = malloc(sizeof(ListNode));
+		ll->head->item = item;
+		ll->head->next = cur;
+		ll->size++;
+		return ll->size;
+	}
+
+
+	cur = ll->head;
+	int idx=1;
+	// 노드 정렬된 형태로 삽입하기
+	while (idx <= ll->size) {
+
+		// 오름차순 정렬 조건
+		if (cur->item > item) {
+			insertNode(ll, idx - 1, item);
+			return idx-1;
+		}
+
+		else if(cur->item == item) {
+			return -1;
+		}
+
+		else {
+			if (cur->next == NULL) {
+				insertNode(ll, ll->size, item);
+				return idx;
+			}
+
+			idx++;
+			cur = cur->next;
+		}
+	}
+	
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void printList(LinkedList *ll){
+void printList(LinkedList* ll) {
 
-	ListNode *cur;
+	ListNode* cur;
 	if (ll == NULL)
 		return;
 	cur = ll->head;
@@ -113,12 +158,12 @@ void printList(LinkedList *ll){
 }
 
 
-void removeAllItems(LinkedList *ll)
+void removeAllItems(LinkedList* ll)
 {
-	ListNode *cur = ll->head;
-	ListNode *tmp;
+	ListNode* cur = ll->head;
+	ListNode* tmp;
 
-	while (cur != NULL){
+	while (cur != NULL) {
 		tmp = cur->next;
 		free(cur);
 		cur = tmp;
@@ -128,9 +173,9 @@ void removeAllItems(LinkedList *ll)
 }
 
 
-ListNode *findNode(LinkedList *ll, int index){
+ListNode* findNode(LinkedList* ll, int index) {
 
-	ListNode *temp;
+	ListNode* temp;
 
 	if (ll == NULL || index < 0 || index >= ll->size)
 		return NULL;
@@ -140,7 +185,7 @@ ListNode *findNode(LinkedList *ll, int index){
 	if (temp == NULL || index < 0)
 		return NULL;
 
-	while (index > 0){
+	while (index > 0) {
 		temp = temp->next;
 		if (temp == NULL)
 			return NULL;
@@ -150,15 +195,15 @@ ListNode *findNode(LinkedList *ll, int index){
 	return temp;
 }
 
-int insertNode(LinkedList *ll, int index, int value){
+int insertNode(LinkedList* ll, int index, int value) {
 
-	ListNode *pre, *cur;
+	ListNode* pre, * cur;
 
 	if (ll == NULL || index < 0 || index > ll->size + 1)
 		return -1;
 
 	// If empty list or inserting first node, need to update head pointer
-	if (ll->head == NULL || index == 0){
+	if (ll->head == NULL || index == 0) {
 		cur = ll->head;
 		ll->head = malloc(sizeof(ListNode));
 		ll->head->item = value;
@@ -170,7 +215,7 @@ int insertNode(LinkedList *ll, int index, int value){
 
 	// Find the nodes before and at the target position
 	// Create a new node and reconnect the links
-	if ((pre = findNode(ll, index - 1)) != NULL){
+	if ((pre = findNode(ll, index - 1)) != NULL) {
 		cur = pre->next;
 		pre->next = malloc(sizeof(ListNode));
 		pre->next->item = value;
@@ -183,16 +228,16 @@ int insertNode(LinkedList *ll, int index, int value){
 }
 
 
-int removeNode(LinkedList *ll, int index){
+int removeNode(LinkedList* ll, int index) {
 
-	ListNode *pre, *cur;
+	ListNode* pre, * cur;
 
 	// Highest index we can remove is size-1
 	if (ll == NULL || index < 0 || index >= ll->size)
 		return -1;
 
 	// If removing first node, need to update head pointer
-	if (index == 0){
+	if (index == 0) {
 		cur = ll->head->next;
 		free(ll->head);
 		ll->head = cur;
@@ -203,7 +248,7 @@ int removeNode(LinkedList *ll, int index){
 
 	// Find the nodes before and after the target position
 	// Free the target node and reconnect the links
-	if ((pre = findNode(ll, index - 1)) != NULL){
+	if ((pre = findNode(ll, index - 1)) != NULL) {
 
 		if (pre->next == NULL)
 			return -1;
