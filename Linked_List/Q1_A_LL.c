@@ -39,7 +39,7 @@ int removeNode(LinkedList* ll, int index);
 int main()
 {
 	LinkedList ll;
-	int c, i, j;
+	int c, i,j;
 	c = 1;
 
 	//Initialize the linked list 1 as an empty linked list
