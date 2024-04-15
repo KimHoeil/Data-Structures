@@ -85,6 +85,38 @@ int main()
 void moveOddItemsToBack(LinkedList *ll)
 {
 	/* add your code here */
+
+	ListNode *cur, *temp;
+	int idx = 0;
+	int index = 0;
+
+	cur = ll->head;
+	while (idx < ll->size)
+	{
+		// item이 홀수인지 판별
+		if (cur->item % 2 == 1)
+		{
+			// 연결리스트의 맨끝에 삽입
+			insertNode(ll, ll->size, cur->item);
+
+			//// 기존 홀수 노드 삭제
+			removeNode(ll, index);
+
+			// 삭제 후 다음 노드 연결
+			cur = findNode(ll, index);
+
+			// 디버깅용
+			// printf("삭제후 cur %d\n", cur->item);
+			// printList(ll);
+			// printf("\n");
+		}
+		else
+		{
+			cur = cur->next;
+			index++;
+		}
+		idx++;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
